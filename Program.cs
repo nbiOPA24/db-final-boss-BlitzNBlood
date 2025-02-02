@@ -18,12 +18,19 @@ public class Comment
     public string comment_text { get; set; }
     public string name { get; set; }
 }
+public class Image
+{
+    public string name { get; set; }
+    public int article_id { get; set; }
+    public string url { get; set; }
+}
 class Program
 {
     static void Main(string[] args)
     {
         List<Article> articleList = new List<Article>();
         List<Comment> commentList = new List<Comment>();
+        List<Image> imageList = new List<Image>();
         using IDbConnection connection = new SqlConnection(
                         "Server=gondolin667.org;" +
                         "Database=yhstudent80_database_1;" +
@@ -42,6 +49,12 @@ class Program
         foreach (Comment s in commentResult)
         {
             commentList.Add(s);
+        }
+        IEnumerable<Image> imageResult = connection.Query<Image>("SELECT Image.name, Image.url, ArToIm.article_id FROM Image JOIN ArToIm ON Image.image_id = ArToIm.image_id");
+        foreach (Image s in imageResult)
+        {
+            //Console.WriteLine($"Namn: {s.name} URL: {s.url}, Artikel: {s.article_id}");
+            imageList.Add(s);
         }
         while (true)
         {
@@ -66,6 +79,11 @@ class Program
             {
                 Console.WriteLine("Var snäll och välj med hjälp av endast nummer.");
             }
+            foreach (Article s in articleResult)
+            {
+                Console.WriteLine($"Titel: {s.title} författare {s.name}, score: {s.score}");
+            }
+
         }
         Console.ReadLine();
     }
